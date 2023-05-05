@@ -1,8 +1,6 @@
 import utils
 
-d = "40as"
-v = 12
-t = 12
+
 
 # tiempo = utils.evaluar_formula(utils.MRU["t"], {"distancia": d, "velocidad": v})
 
