@@ -13,11 +13,19 @@ MRU = {
 def evaluar_formula(formula, valores) :
     # Reemplazamos las variables en la fórmula por sus valores correspondientes
     for variable, valor in valores.items():
-        formula = formula.replace(variable, str(valor))
+        newFormula = formula.replace(variable, str(valor))
+        # verificamos si se hizo la sustitucion
+        if(formula == newFormula ):
+            raise NameError("Las variables no se identifican")
+        formula = newFormula
+        
     # Evaluamos la fórmula utilizando eval() y el módulo math
     try:
         resultado = eval(formula, {"__builtins__": None}, {"math": math})
-    except ZeroDivisionError:
-        raise ZeroDivisionError("Imposible dividir entre 0")
+    except SyntaxError:
+        raise TypeError("El tipo de dato no es correcto")
+
+    except:
+        raise
     
     return resultado

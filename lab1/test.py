@@ -1,13 +1,18 @@
 import utils
 
-d = 40
-v = 5
-t = 0
+d = "40as"
+v = 12
+t = 12
 
-tiempo = utils.evaluar_formula(utils.MRU["t"], {"distancia": d, "velocidad": v})
+# tiempo = utils.evaluar_formula(utils.MRU["t"], {"distancia": d, "velocidad": v})
 
 try:
     v = utils.evaluar_formula(utils.MRU["v"], {"distancia": d, "tiempo": t})
     print(v)
 except ZeroDivisionError:
     print("El tiempo no puede ser 0")
+except NameError:
+    print("Las variables no se identifican")
+    
+except TypeError:
+    print("El tipo de dato no es correcto")
