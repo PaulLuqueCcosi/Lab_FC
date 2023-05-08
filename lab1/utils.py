@@ -2,58 +2,181 @@ import math
 
 
 # definimos las formulas de MRU
-
 MRU = {
-    "v" : "distancia / tiempo",
-    "d" : "velocidad * tiempo",
-    "t" : "distancia / velocidad"
+    "v": {
+        "distancia / tiempo": ["distancia", "tiempo"],
+    },
+
+    "d": {
+        "velocidad * tiempo": ["velocidad", "tiempo"],
+    },
+    "t": {
+        "distancia / velocidad": ["distancia", "velocidad"],
+    },
+
 }
+
 
 # Definimos las formulas de MRUV
 
 MRUV = {
-    "a": [
-        "2 * (distancia - velocidad_inicial * tiempo) / tiempo**2",
-        "(velocidad_final - velocidad_inicial) / tiempo",
-        "(velocidad_final**2 - velocidad_inicial**2) / (2 * distancia)"
-    ],
-    "d": [
-        "velocidad_inicial * tiempo + 1/2 * a * tiempo**2",
-        "(velocidad_final**2 - velocidad_inicial**2) / (2 * a)",
-        "velocidad_promedio * tiempo",
-        "velocidad_inicial * tiempo + 1/2 * (velocidad_final - velocidad_inicial) * tiempo"
-    ],
-    "t": [
-        "(-velocidad_inicial + (velocidad_inicial**2 + 2 * a * distancia)**0.5) / a",  # solución positiva de la ecuación de segundo grado
-        "(velocidad_final - velocidad_inicial) / a",
-        "2 * distancia / (velocidad_final + velocidad_inicial)",
-        "distancia / velocidad_promedio"
-    ],
-    "v0": [
-        "(distancia - 1/2 * a * tiempo**2) / tiempo",
-        "velocidad_final - a * tiempo",
-        "(2 * distancia / tiempo) - velocidad_final"
-    ],
-    "v": [
-        "velocidad_inicial + a * tiempo",
-        "(velocidad_inicial**2 + 2 * a * distancia)**0.5",
-        "(2 * distancia / tiempo) - velocidad_inicial"
-    ],
-    
+    # OK
+    "a": {
+        "2 * (distancia - (velocidad_inicial * tiempo)) / math.pow(tiempo, 2)": ["distancia", "velocidad_inicial", "tiempo"],
+        "(velocidad_final - velocidad_inicial) / tiempo": ["velocidad_final", "velocidad_inicial", "tiempo"],
+    },
+    # OK
+    "d": {
+        "velocidad_inicial * tiempo + (aceleracion * math.pow(tiempo,2)) / 2":  ["velocidad_inicial", "timepo", "aceleracion"],
+    },
+    # OK
+    "t": {
+        "(-velocidad_inicial + (math.pow(velocidad_inicial,2) + 2 * aceleracion * distancia) ** 0.5) / aceleracion": ["velocidad_inicial", "aceleracion", "distancia"],
+        "(velocidad_final - velocidad_inicial) / aceleracion":  ["velocidad_final", "velocidad_inicial", "aceleracion"],
+
+    },
+    # OK
+    "v0": {
+
+        "distancia/tiempo - (acelaracion * tiempo) / 2": ["distancia", "tiempo", "aceleracion"],
+        "velocidad_final - (aceleracion * tiempo)":  ["velocidad_final", "aceleracion", "tiempo"],
+    },
+    # OK
+    "vf": {
+        "velocidad_inicial + (aceleracion * tiempo)": ["velocidad_inicial", "aceleracion", "tiempo"],
+    },
+
+    # "otro": {
+    #     "una weba": ["depe1", "depe2", "depe3"],
+    # },
 }
 
 
-
-def evaluar_formula(formula, valores) :
+def evaluar_formula(formula, valores):
     # Reemplazamos las variables en la fórmula por sus valores correspondientes
     for variable, valor in valores.items():
         formula = formula.replace(variable, str(valor))
-        
+
     # Evaluamos la fórmula utilizando eval() y el módulo math
     try:
         resultado = eval(formula, {"__builtins__": None}, {"math": math})
-    
+
     except:
         raise
-    
+
     return resultado
+
+
+# MENU DE SELECCION
+while (True):
+    print("Ingrese que tipo de problema quiere resolver: ")
+    print("1. MRU")
+    print("2. MRUV")
+    try:
+        tipo = int(input("Ingrese el número de la opción: "))
+    except:
+        print("Solo ingrese numeros")
+        continue
+
+    # verificamos
+    if (tipo != 1 and tipo != 2):
+        print("Opción INVALIDA para tipo de problema")
+    else:
+        break
+
+print("--------------------")
+tipo = "MRU" if tipo == 1 else "MRUV"
+print(f"Tipo: {tipo}")
+print("--------------------")
+
+#TODO MEJORAR
+while (True):
+
+    print("Seleccione la variable que desea calcular: ")
+    numeroVariables = 0
+
+    # MRU
+    if (tipo == "1"):
+        for variable in MRU.keys():
+            numeroVariables += 1
+            print(f"{numeroVariables}. {variable}")
+
+        try:
+            variable = int(input("Ingrese el número de la opción: "))
+        except:
+            print("Solo ingrese numeros")
+            continue
+
+        # verificamos que la opción sea válida
+        if (variable <= 0 or variable > numeroVariables):
+            print("Opción inválida de variable MRU")
+            continue
+
+    # MRUV
+    else:
+        for variable in MRUV.keys():
+            numeroVariables += 1
+            print(f"{numeroVariables}. {variable}")
+
+        try:
+
+            variable = int(input("Ingrese el número de la opción: "))
+        except:
+            print("Solo ingrese numeros")
+            continue
+
+        if (variable <= 0 or variable > numeroVariables):
+            print("Opción inválida de variable MRUV")
+            continue
+
+    break
+
+print("--------------------")
+# impirmimos el tipo y la variable
+print(f"Tipo: {tipo}")
+variable = list(MRU.keys())[
+    variable - 1] if tipo == '1' else list(MRUV.keys())[variable - 1]
+
+print(f"Variable: {variable}")
+
+print("--------------------")
+
+# imrpimimos las lo que necesitamo para usar una formula posible
+
+while (True):
+    numeroFormulas = 0
+    print("Seleccione segun los parametros que tiene:")
+
+    for formula, parametros in (MRU[variable].items() if tipo == "MRU" else MRUV[variable].items()):
+        numeroFormulas += 1
+        print(f"{numeroFormulas}. Parametros:")
+        for parametro in parametros:
+            print(f"\t- {parametro}")
+
+        print("", end="\n")
+
+    try:
+        formulaIndice = int(input("\nSeleccione la formula que desea usar: "))
+    except:
+        print("Solo ingrese numeros")
+        continue
+    
+    # print(f"Numero formula {numeroFormulas}")
+
+    if (formulaIndice <= 0 or formulaIndice > numeroFormulas):
+        print("Opción de formula invalida")
+        continue
+
+    break
+
+
+print("--------------------")
+print(f"Tipo: {'MRU' if tipo == '1' else 'MRUV'}")
+
+print(f"Variable: {variable}")
+# imprimo la formula
+formula = list(MRU[variable].keys())[
+    formulaIndice - 1] if tipo == '1' else list(MRUV[variable].keys())[formulaIndice - 1]
+
+print(f"Formula: {formula}")
+print("--------------------")
