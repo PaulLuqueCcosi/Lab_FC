@@ -223,16 +223,17 @@ while (True):
         numeroFormulas += 1
         print(f"{numeroFormulas}. Parametros:")
         for parametro in dataFormula["parametros"]:
-            print(f"\t- {parametro}")
+            print(f"\t- {parametro}", end="\t-> ")
             # IMPRIMIMO LAS RESTRICCIONES
-            print(f"\tRestricciones:")
+            print(f"Restricciones: (", end="")
             for restriccion in dataFormula["restricciones"][parametro]:
-                print(f"\t\t - {restriccion}")
+                print(f" {restriccion},", end="")
+            print(")")
 
-        print("", end="\n")
+       
 
     try:
-        formulaIndice = int(input("\nSeleccione segun sus parametros: "))
+        formulaIndice = int(input("Seleccione segun sus parametros: "))
     except ValueError:
         print("\nSolo ingrese numeros\n")
         continue
