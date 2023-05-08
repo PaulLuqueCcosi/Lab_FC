@@ -74,18 +74,18 @@ while (True):
     print("2. MRUV")
     try:
         tipo = int(input("Ingrese el número de la opción: "))
-    except:
-        print("Solo ingrese numeros")
+    except ValueError:
+        print("\nSolo ingrese numeros\n")
         continue
 
     # verificamos
     if (tipo != 1 and tipo != 2):
-        print("Opción INVALIDA para tipo de problema")
+        print("\nOpción INVALIDA para tipo de problema\n")
     else:
         break
 
 print("--------------------")
-tipo = "MRU" if tipo == 1 else "MRUV"
+tipo = ("MRU" if tipo == 1 else "MRUV")
 print(f"Tipo: {tipo}")
 print("--------------------")
 
@@ -103,13 +103,13 @@ while (True):
 
         try:
             variable = int(input("Ingrese el número de la opción: "))
-        except:
-            print("Solo ingrese numeros")
+        except ValueError:
+            print("\nSolo ingrese numeros\n")
             continue
 
         # verificamos que la opción sea válida
         if (variable <= 0 or variable > numeroVariables):
-            print("Opción inválida de variable MRU")
+            print("\nOpción inválida de variable MRU\n")
             continue
 
     # MRUV
@@ -121,12 +121,12 @@ while (True):
         try:
 
             variable = int(input("Ingrese el número de la opción: "))
-        except:
-            print("Solo ingrese numeros")
+        except ValueError:
+            print("\nSolo ingrese numeros\n")
             continue
 
         if (variable <= 0 or variable > numeroVariables):
-            print("Opción inválida de variable MRUV")
+            print("\nOpción inválida de variable MRUV\n")
             continue
 
     break
@@ -145,7 +145,7 @@ print("--------------------")
 
 while (True):
     numeroFormulas = 0
-    print("Seleccione segun los parametros que tiene:")
+    print(f"Seleccione segun los parametros que tiene para hallar '{variable}' :")
 
     for formula, parametros in (MRU[variable].items() if tipo == "MRU" else MRUV[variable].items()):
         numeroFormulas += 1
@@ -156,15 +156,15 @@ while (True):
         print("", end="\n")
 
     try:
-        formulaIndice = int(input("\nSeleccione la formula que desea usar: "))
-    except:
-        print("Solo ingrese numeros")
+        formulaIndice = int(input("\nSeleccione segun sus parametros: "))
+    except ValueError:
+        print("\nSolo ingrese numeros\n")
         continue
     
     # print(f"Numero formula {numeroFormulas}")
 
     if (formulaIndice <= 0 or formulaIndice > numeroFormulas):
-        print("Opción de formula invalida")
+        print("\nOpción de invalida\n")
         continue
 
     break
