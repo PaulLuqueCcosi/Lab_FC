@@ -27,7 +27,7 @@ MRUV = {
     },
     # OK
     "d": {
-        "velocidad_inicial * tiempo + (aceleracion * math.pow(tiempo,2)) / 2":  ["velocidad_inicial", "timepo", "aceleracion"],
+        "velocidad_inicial * tiempo + (aceleracion * math.pow(tiempo,2)) / 2":  ["velocidad_inicial", "tiempo", "aceleracion"],
     },
     # OK
     "t": {
@@ -80,7 +80,7 @@ while (True):
 
     # verificamos
     if (tipo != 1 and tipo != 2):
-        print("\nOpción INVALIDA para tipo de problema\n")
+        print(f"\nOpción {tipo} INVALIDA\n")
     else:
         break
 
@@ -96,21 +96,10 @@ while (True):
     numeroVariables = 0
 
     # MRU
-    if (tipo == "1"):
+    if (tipo == "MRU"):
         for variable in MRU.keys():
             numeroVariables += 1
             print(f"{numeroVariables}. {variable}")
-
-        try:
-            variable = int(input("Ingrese el número de la opción: "))
-        except ValueError:
-            print("\nSolo ingrese numeros\n")
-            continue
-
-        # verificamos que la opción sea válida
-        if (variable <= 0 or variable > numeroVariables):
-            print("\nOpción inválida de variable MRU\n")
-            continue
 
     # MRUV
     else:
@@ -118,16 +107,16 @@ while (True):
             numeroVariables += 1
             print(f"{numeroVariables}. {variable}")
 
-        try:
+    try:
 
-            variable = int(input("Ingrese el número de la opción: "))
-        except ValueError:
-            print("\nSolo ingrese numeros\n")
-            continue
+        variable = int(input("Ingrese el una opción: "))
+    except ValueError:
+        print("\nSolo ingrese numeros\n")
+        continue
 
-        if (variable <= 0 or variable > numeroVariables):
-            print("\nOpción inválida de variable MRUV\n")
-            continue
+    if (variable <= 0 or variable > numeroVariables):
+        print(f"\nOpción {variable} inválida\n")
+        continue
 
     break
 
@@ -135,7 +124,7 @@ print("--------------------")
 # impirmimos el tipo y la variable
 print(f"Tipo: {tipo}")
 variable = list(MRU.keys())[
-    variable - 1] if tipo == '1' else list(MRUV.keys())[variable - 1]
+    variable - 1] if tipo == 'MRU' else list(MRUV.keys())[variable - 1]
 
 print(f"Variable: {variable}")
 
@@ -164,19 +153,45 @@ while (True):
     # print(f"Numero formula {numeroFormulas}")
 
     if (formulaIndice <= 0 or formulaIndice > numeroFormulas):
-        print("\nOpción de invalida\n")
+        print(f"\nOpción {formulaIndice} invalida\n")
         continue
 
     break
 
 
 print("--------------------")
-print(f"Tipo: {'MRU' if tipo == '1' else 'MRUV'}")
+print(f"Tipo: {tipo}")
 
 print(f"Variable: {variable}")
 # imprimo la formula
 formula = list(MRU[variable].keys())[
-    formulaIndice - 1] if tipo == '1' else list(MRUV[variable].keys())[formulaIndice - 1]
+    formulaIndice - 1] if tipo == 'MRU' else list(MRUV[variable].keys())[formulaIndice - 1]
 
 print(f"Formula: {formula}")
+print("--------------------")
+
+
+### AQUI EN ADELANTE SE RESUELVE EL PROBLEMA
+
+print("Ingrese los valores de los parametros: ")
+
+valores = {}
+for parametro in (MRU[variable][formula] if tipo == "MRU" else MRUV[variable][formula]):
+    try:
+        valores[parametro] = float(input(f"{parametro}: "))
+    except ValueError:
+        print("\nSolo ingrese numeros\n")
+        continue
+
+print("--------------------")
+print(f"Tipo: {tipo}")
+print(f"Variable: {variable}")
+print(f"Formula: {formula}")
+print(f"Parametros: {valores}")
+print("--------------------")
+
+# calculamos el resultado
+resultado = evaluar_formula(formula, valores)
+print("--------------------")
+print(f"Resultado: {variable} = {resultado}")
 print("--------------------")
