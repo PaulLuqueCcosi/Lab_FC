@@ -281,13 +281,13 @@ while (True):
 
         try:
             
-            cadena = input(f"{parametro}: ")
-            valor, unidad = cadena.split(" ")
-            valores[parametro] = float(valor)
-            unidad = pq.Quantity(1, unidad)
+            # cadena = input(f"{parametro}: ")
+            # valor, unidad = cadena.split(" ")
+            # valores[parametro] = float(valor)
+            # unidad = pq.Quantity(1, unidad)
 
             
-            # valores[parametro] = float(input(f"{parametro}: "))
+            valores[parametro] = float(input(f"{parametro}: "))
 
         except ValueError:
             print("\nSolo ingrese numeros\n")
