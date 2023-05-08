@@ -224,9 +224,9 @@ while (True):
         for parametro in dataFormula["parametros"]:
             print(f"\t- {parametro}")
             # IMPRIMIMO LAS RESTRICCIONES
-            print(f"\t\tRestricciones:")
+            print(f"\tRestricciones:")
             for restriccion in dataFormula["restricciones"][parametro]:
-                print(f"\t\t\t- {restriccion}")
+                print(f"\t\t - {restriccion}")
 
         print("", end="\n")
 
@@ -255,19 +255,23 @@ formula = list(dataSet[variable].keys())[formulaIndice - 1]
 print(f"Formula: {formula}")
 print("--------------------")
 
-
-# AQUI EN ADELANTE SE RESUELVE EL PROBLEMA ---------------------
+# INGRESO DE PARAMETROS ------------------------------------
 while (True):
+    ok = True
     parametrosOK = True
     print("Ingrese los valores de los parametros: ")
 
     valores = {}
     for parametro in (dataSet[variable][formula]["parametros"]):
+        if(not ok):
+            break
+        
         try:
             valores[parametro] = float(input(f"{parametro}: "))
 
         except ValueError:
             print("\nSolo ingrese numeros\n")
+            ok = False
             continue
 
         # Comprombamos las restricciones
