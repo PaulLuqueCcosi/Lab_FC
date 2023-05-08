@@ -14,7 +14,7 @@ MRU = {
                     "distancia": [],
 
                 },
-                "unidad": {
+                "unidades": {
                     "distancia": "m",
                     "tiempo": "s",
                 }
@@ -30,7 +30,7 @@ MRU = {
                     "tiempo": [],
                     "velocidad": [],
                 },
-                "unidad": {
+                "unidades": {
                     "velocidad": "m/s",
                     "tiempo": "s",
                 },
@@ -44,7 +44,7 @@ MRU = {
                     "velocidad": ["velocidad > 0",],
                     "distancia": [],
                 },
-                "unidad": {
+                "unidades": {
                     "distancia": "m",
                     "velocidad": "m/s",
                 },
@@ -67,6 +67,11 @@ MRUV = {
                 "velocidad_inicial": [],
                 "tiempo": ["tiempo > 0",],
             },
+            "unidades":{
+                "distancia": "m",
+                "velocidad_inicial": "m/s",
+                "tiempo": "s",
+            }
         },
 
         "(velocidad_final - velocidad_inicial) / tiempo": {
@@ -76,6 +81,11 @@ MRUV = {
                 "velocidad_inicial": [],
                 "tiempo": ["tiempo > 0",],
             },
+            "unidades": {
+                "velocidad_final": "m/s",
+                "velocidad_inicial": "m/s",
+                "tiempo": "s",
+            }
         },
 
 
@@ -89,6 +99,11 @@ MRUV = {
                 "tiempo": [],
                 "aceleracion": [],
             },
+            "unidades": {
+                "velocidad_inicial": "m/s",
+                "tiempo": "s",
+                "aceleracion": "m/s**2",
+            }
         },
     },
     # OK
@@ -101,6 +116,11 @@ MRUV = {
                 "aceleracion": ["aceleracion > 0",],
                 "distancia": [],
             },
+            "unidades": {
+                "velocidad_inicial": "m/s",
+                "aceleracion": "m/s**2",
+                "distancia": "m",
+            }
         },
 
 
@@ -128,6 +148,11 @@ MRUV = {
                 "tiempo": ["tiempo > 0",],
                 "aceleracion": [],
             },
+            "unidades": {
+                "distancia": "m",
+                "tiempo": "s",
+                "aceleracion": "m/s**2",
+            }
         },
 
 
@@ -138,6 +163,11 @@ MRUV = {
                 "aceleracion": [],
                 "tiempo": [],
             },
+            "unidades": {
+                "velocidad_final": "m/s",
+                "aceleracion": "m/s**2",
+                "tiempo": "s",
+            }
         },
     },
     # OK
@@ -149,20 +179,46 @@ MRUV = {
                 "aceleracion": [],
                 "tiempo": [],
             },
+            "unidades": {
+                "velocidad_inicial": "m/s",
+                "aceleracion": "m/s**2",
+                "tiempo": "s",
+            }
         },
     },
 
 }
 
 
-def evaluar_formula(formula, valores):
+# def evaluar_formula(formula, valores):
+#     # Reemplazamos las variables en la fórmula por sus valores correspondientes
+#     for variable, valor in valores.items():
+#         formula = formula.replace(variable, str(valor))
+
+#     # Evaluamos la fórmula utilizando eval() y el módulo math
+#     try:
+#         resultado = eval(formula, {"__builtins__": None}, {"math": math})
+
+#     except:
+#         raise
+
+#     return resultado
+
+
+
+
+def evaluar_formula(formula, valores, unidades):
     # Reemplazamos las variables en la fórmula por sus valores correspondientes
     for variable, valor in valores.items():
-        formula = formula.replace(variable, str(valor))
+        valor = str(valor)
+        unidad = unidades[variable]
+        valorParaReemplazar = f"pq.Quantity({valor}, '{unidad}')"
+        formula = formula.replace(variable, valorParaReemplazar)
 
-    # Evaluamos la fórmula utilizando eval() y el módulo math
+    # Evaluamos la fórmula utilizando eval() y el módulo mat
     try:
-        resultado = eval(formula, {"__builtins__": None}, {"math": math})
+        print(formula)
+        resultado = eval(formula, {"__builtins__": None}, {"math": math, "pq":pq})
 
     except:
         raise
@@ -275,19 +331,36 @@ while (True):
     print("Ingrese los valores de los parametros: ")
 
     valores = {}
+    unidades = dataSet[variable][formula]["unidades"]
     for parametro in (dataSet[variable][formula]["parametros"]):
         if (not ok):
             break
 
         try:
             
-            # cadena = input(f"{parametro}: ")
-            # valor, unidad = cadena.split(" ")
-            # valores[parametro] = float(valor)
+            #ingreso de la cadena
+            cadena = input(f"{parametro}: ")
+            
+            # tratamos de separa
+            try:
+                valor, unidad = cadena.split(" ")
+            except ValueError:
+                unidad = ""
+                
+            # verificammos si la unidad es la misma que el sistema internacional
+            if(unidad == ""):
+                unidad = unidades[parametro]
+            
+            if not unidades[parametro] == unidad:
+                #actualizamos la nueva unidad
+                unidades[parametro] = unidad
+                
+                
+            valores[parametro] = float(valor)
             # unidad = pq.Quantity(1, unidad)
 
             
-            valores[parametro] = float(input(f"{parametro}: "))
+            # valores[parametro] = float(input(f"{parametro}: "))
 
         except ValueError:
             print("\nSolo ingrese numeros\n")
@@ -317,11 +390,12 @@ print(f"Tipo: {tipo}")
 print(f"Variable: {variable}")
 print(f"Formula: {formula}")
 print(f"Parametros: {valores}")
+print(f"Unidades: {unidades}")
 print("--------------------")
 
 # calculamos el resultado
 try:
-    resultado = evaluar_formula(formula, valores)
+    resultado = evaluar_formula(formula, valores, unidades)
 except:
     print("\nNo se puede dividir entre 0\n")
 

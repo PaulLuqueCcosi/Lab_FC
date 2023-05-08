@@ -59,26 +59,29 @@ MRU = {
 def evaluar_formula(formula, valores, unidades):
     # Reemplazamos las variables en la fórmula por sus valores correspondientes
     for variable, valor in valores.items():
-        formula = formula.replace(variable, str(pq.Quantity(float(valor), unidades[variable])))
+        valor = str(valor)
+        unidad = unidades[variable]
+        valorParaReemplazar = f"pq.Quantity({valor}, '{unidad}')"
+        formula = formula.replace(variable, valorParaReemplazar)
 
-
-    # Evaluamos la fórmula utilizando eval() y el módulo math
-    
-
+    # Evaluamos la fórmula utilizando eval() y el módulo mat
     try:
-        resultado = eval(formula, {"__builtins__": None}, {"math": math})
+        print(formula)
+        resultado = eval(formula, {"__builtins__": None}, {"math": math, "pq":pq})
 
     except:
         raise
 
     return resultado
 
-
-formula = MRU['v']['distancia / tiempo']
-valores = {'distancia': 10, 'tiempo': 5}
+formula = "distancia / velocidad"
+valores = {'distancia': 10, 'velocidad': 5}
 unidades = {
     "distancia": "m",
     "velocidad": "m/s",
-},
+}
+
 
 resultado = evaluar_formula(formula, valores, unidades)
+
+print(f"result: {resultado}")
