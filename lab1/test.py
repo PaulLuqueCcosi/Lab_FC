@@ -6,6 +6,7 @@ MRU = {
                 "parametros": ["distancia", "tiempo"],
                 "restricciones": {
                     "tiempo": ["tiempo > 0",],
+                    "distancia": [],
                 }
             },
     },

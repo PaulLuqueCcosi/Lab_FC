@@ -4,15 +4,38 @@ import math
 # definimos las formulas de MRU
 MRU = {
     "v": {
-        "distancia / tiempo": ["distancia", "tiempo"],
+        "distancia / tiempo":
+            {
+                "parametros": ["distancia", "tiempo"],
+                "restricciones": {
+                    "tiempo": ["tiempo > 0",],
+                    "distancia": [],
+
+                }
+            },
     },
 
     "d": {
-        "velocidad * tiempo": ["velocidad", "tiempo"],
+        "velocidad * tiempo":
+            {
+                "parametros": ["velocidad", "tiempo"],
+                "restricciones": {
+                    "tiempo": ["tiempo > 0",],
+                    "velocidad": [],
+                }
+            },
     },
     "t": {
-        "distancia / velocidad": ["distancia", "velocidad"],
+        "distancia / velocidad":
+            {
+                "parametros": ["distancia", "velocidad"],
+                "restricciones": {
+                    "velocidad": ["velocidad > 0",],
+                    "distancia": [],
+                }
+            },
     },
+
 
 }
 
@@ -22,33 +45,98 @@ MRU = {
 MRUV = {
     # OK
     "a": {
-        "2 * (distancia - (velocidad_inicial * tiempo)) / math.pow(tiempo, 2)": ["distancia", "velocidad_inicial", "tiempo"],
-        "(velocidad_final - velocidad_inicial) / tiempo": ["velocidad_final", "velocidad_inicial", "tiempo"],
+        "2 * (distancia - (velocidad_inicial * tiempo)) / math.pow(tiempo, 2)": {
+            "parametros": ["distancia", "velocidad_inicial", "tiempo"],
+            "restricciones": {
+                "distancia": [],
+                "velocidad_inicial": [],
+                "tiempo": ["tiempo > 0",],
+            },
+        },
+
+        "(velocidad_final - velocidad_inicial) / tiempo": {
+            "parametros": ["velocidad_final", "velocidad_inicial", "tiempo"],
+            "restricciones": {
+                "velocidad_final": [],
+                "velocidad_inicial": [],
+                "tiempo": ["tiempo > 0",],
+            },
+        },
+
+
     },
     # OK
     "d": {
-        "velocidad_inicial * tiempo + (aceleracion * math.pow(tiempo,2)) / 2":  ["velocidad_inicial", "tiempo", "aceleracion"],
+        "velocidad_inicial * tiempo + (aceleracion * math.pow(tiempo,2)) / 2":  {
+            "parametros": ["velocidad_inicial", "tiempo", "aceleracion"],
+            "restricciones": {
+                "velocidad_inicial": [],
+                "tiempo": [],
+                "aceleracion": [],
+            },
+        },
     },
     # OK
     "t": {
-        "(-velocidad_inicial + (math.pow(velocidad_inicial,2) + 2 * aceleracion * distancia) ** 0.5) / aceleracion": ["velocidad_inicial", "aceleracion", "distancia"],
-        "(velocidad_final - velocidad_inicial) / aceleracion":  ["velocidad_final", "velocidad_inicial", "aceleracion"],
+        "(-velocidad_inicial + (math.pow(velocidad_inicial,2) + 2 * aceleracion * distancia) ** 0.5) / aceleracion": {
+
+            "parametros": ["velocidad_inicial", "aceleracion", "distancia"],
+            "restricciones": {
+                "velocidad_inicial": [],
+                "aceleracion": ["aceleracion > 0",],
+                "distancia": [],
+            },
+        },
+
+
+
+
+        "(velocidad_final - velocidad_inicial) / aceleracion":  {
+
+
+            "parametros": ["velocidad_final", "velocidad_inicial", "aceleracion"],
+            "restricciones": {
+                "velocidad_final": [],
+                "velocidad_inicial": [],
+                "aceleracion": ["aceleracion > 0",],
+            },
+        },
 
     },
     # OK
     "v0": {
 
-        "distancia/tiempo - (acelaracion * tiempo) / 2": ["distancia", "tiempo", "aceleracion"],
-        "velocidad_final - (aceleracion * tiempo)":  ["velocidad_final", "aceleracion", "tiempo"],
+        "distancia/tiempo - (acelaracion * tiempo) / 2": {
+            "parametros": ["distancia", "tiempo", "aceleracion"],
+            "restricciones": {
+                "distancia": [],
+                "tiempo": ["tiempo > 0",],
+                "aceleracion": [],
+            },
+        },
+
+
+        "velocidad_final - (aceleracion * tiempo)":  {
+            "parametros": ["velocidad_final", "aceleracion", "tiempo"],
+            "restricciones": {
+                "velocidad_final": [],
+                "aceleracion": [],
+                "tiempo": [],
+            },
+        },
     },
     # OK
     "vf": {
-        "velocidad_inicial + (aceleracion * tiempo)": ["velocidad_inicial", "aceleracion", "tiempo"],
+        "velocidad_inicial + (aceleracion * tiempo)": {
+            "parametros": ["velocidad_inicial", "aceleracion", "tiempo"],
+            "restricciones": {
+                "velocidad_inicial": [],
+                "aceleracion": [],
+                "tiempo": [],
+            },
+        },
     },
 
-    # "otro": {
-    #     "una weba": ["depe1", "depe2", "depe3"],
-    # },
 }
 
 
@@ -67,7 +155,8 @@ def evaluar_formula(formula, valores):
     return resultado
 
 
-# MENU DE SELECCION
+
+# MENU DE SELECCION ------------------------------------
 while (True):
     print("Ingrese que tipo de problema quiere resolver: ")
     print("1. MRU")
@@ -86,29 +175,21 @@ while (True):
 
 print("--------------------")
 tipo = ("MRU" if tipo == 1 else "MRUV")
+dataSet = MRU if tipo == "MRU" else MRUV
 print(f"Tipo: {tipo}")
 print("--------------------")
 
-#TODO MEJORAR
+# --------------------------------------------------------
 while (True):
 
     print("Seleccione la variable que desea calcular: ")
     numeroVariables = 0
 
-    # MRU
-    if (tipo == "MRU"):
-        for variable in MRU.keys():
-            numeroVariables += 1
-            print(f"{numeroVariables}. {variable}")
-
-    # MRUV
-    else:
-        for variable in MRUV.keys():
-            numeroVariables += 1
-            print(f"{numeroVariables}. {variable}")
+    for variable in dataSet.keys():
+        numeroVariables += 1
+        print(f"{numeroVariables}. {variable}")
 
     try:
-
         variable = int(input("Ingrese el una opción: "))
     except ValueError:
         print("\nSolo ingrese numeros\n")
@@ -123,24 +204,29 @@ while (True):
 print("--------------------")
 # impirmimos el tipo y la variable
 print(f"Tipo: {tipo}")
-variable = list(MRU.keys())[
-    variable - 1] if tipo == 'MRU' else list(MRUV.keys())[variable - 1]
+variable = list(dataSet.keys())[variable - 1]
 
 print(f"Variable: {variable}")
 
 print("--------------------")
 
-# imrpimimos las lo que necesitamo para usar una formula posible
+# imrpimimos las lo que necesitamo para usar una formula posible --------------------
 
 while (True):
     numeroFormulas = 0
-    print(f"Seleccione segun los parametros que tiene para hallar '{variable}' :")
+    print(
+        f"Seleccione segun los parametros que tiene para hallar '{variable}' :")
 
-    for formula, parametros in (MRU[variable].items() if tipo == "MRU" else MRUV[variable].items()):
+    for formula, dataFormula in (dataSet[variable].items()):\
+
         numeroFormulas += 1
         print(f"{numeroFormulas}. Parametros:")
-        for parametro in parametros:
+        for parametro in dataFormula["parametros"]:
             print(f"\t- {parametro}")
+            # IMPRIMIMO LAS RESTRICCIONES
+            print(f"\t\tRestricciones:")
+            for restriccion in dataFormula["restricciones"][parametro]:
+                print(f"\t\t\t- {restriccion}")
 
         print("", end="\n")
 
@@ -149,7 +235,7 @@ while (True):
     except ValueError:
         print("\nSolo ingrese numeros\n")
         continue
-    
+
     # print(f"Numero formula {numeroFormulas}")
 
     if (formulaIndice <= 0 or formulaIndice > numeroFormulas):
@@ -164,24 +250,43 @@ print(f"Tipo: {tipo}")
 
 print(f"Variable: {variable}")
 # imprimo la formula
-formula = list(MRU[variable].keys())[
-    formulaIndice - 1] if tipo == 'MRU' else list(MRUV[variable].keys())[formulaIndice - 1]
+formula = list(dataSet[variable].keys())[formulaIndice - 1]
 
 print(f"Formula: {formula}")
 print("--------------------")
 
 
-### AQUI EN ADELANTE SE RESUELVE EL PROBLEMA ---------------------
+# AQUI EN ADELANTE SE RESUELVE EL PROBLEMA ---------------------
+while (True):
+    parametrosOK = True
+    print("Ingrese los valores de los parametros: ")
 
-print("Ingrese los valores de los parametros: ")
+    valores = {}
+    for parametro in (dataSet[variable][formula]["parametros"]):
+        try:
+            valores[parametro] = float(input(f"{parametro}: "))
 
-valores = {}
-for parametro in (MRU[variable][formula] if tipo == "MRU" else MRUV[variable][formula]):
-    try:
-        valores[parametro] = float(input(f"{parametro}: "))
-    except ValueError:
-        print("\nSolo ingrese numeros\n")
+        except ValueError:
+            print("\nSolo ingrese numeros\n")
+            continue
+
+        # Comprombamos las restricciones
+        for restriccion in dataSet[variable][formula]["restricciones"][parametro]:
+            if not eval(restriccion.replace(parametro, str(valores[parametro]))):
+                print(
+                    f"\nLa restricción '{restriccion}' no se cumple para el valor de '{parametro}' = {valores[parametro]}.")
+                parametrosOK = False
+                valores.pop(parametro)
+                break
+
+        if (not parametrosOK):
+            break
+
+    if (not parametrosOK):
         continue
+
+    break
+
 
 print("--------------------")
 print(f"Tipo: {tipo}")
@@ -195,8 +300,8 @@ try:
     resultado = evaluar_formula(formula, valores)
 except:
     print("\nNo se puede dividir entre 0\n")
-    
-    
+
+
 print("--------------------")
 print(f"Resultado: {variable} = {resultado}")
 print("--------------------")
