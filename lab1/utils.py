@@ -1,4 +1,6 @@
 import math
+import quantities as pq
+
 
 
 # definimos las formulas de MRU
@@ -11,10 +13,14 @@ MRU = {
                     "tiempo": ["tiempo > 0",],
                     "distancia": [],
 
+                },
+                "unidad": {
+                    "distancia": "m",
+                    "tiempo": "s",
                 }
             },
     },
-  
+
 
     "d": {
         "velocidad * tiempo":
@@ -23,7 +29,11 @@ MRU = {
                 "restricciones": {
                     "tiempo": [],
                     "velocidad": [],
-                }
+                },
+                "unidad": {
+                    "velocidad": "m/s",
+                    "tiempo": "s",
+                },
             },
     },
     "t": {
@@ -33,7 +43,11 @@ MRU = {
                 "restricciones": {
                     "velocidad": ["velocidad > 0",],
                     "distancia": [],
-                }
+                },
+                "unidad": {
+                    "distancia": "m",
+                    "velocidad": "m/s",
+                },
             },
     },
 
@@ -156,7 +170,6 @@ def evaluar_formula(formula, valores):
     return resultado
 
 
-
 # MENU DE SELECCION ------------------------------------
 while (True):
     print("Ingrese que tipo de problema quiere resolver: ")
@@ -230,8 +243,6 @@ while (True):
                 print(f" {restriccion},", end="")
             print(")")
 
-       
-
     try:
         formulaIndice = int(input("Seleccione segun sus parametros: "))
     except ValueError:
@@ -265,11 +276,18 @@ while (True):
 
     valores = {}
     for parametro in (dataSet[variable][formula]["parametros"]):
-        if(not ok):
+        if (not ok):
             break
-        
+
         try:
-            valores[parametro] = float(input(f"{parametro}: "))
+            
+            cadena = input(f"{parametro}: ")
+            valor, unidad = cadena.split(" ")
+            valores[parametro] = float(valor)
+            unidad = pq.Quantity(1, unidad)
+
+            
+            # valores[parametro] = float(input(f"{parametro}: "))
 
         except ValueError:
             print("\nSolo ingrese numeros\n")
