@@ -14,13 +14,14 @@ MRU = {
                 }
             },
     },
+  
 
     "d": {
         "velocidad * tiempo":
             {
                 "parametros": ["velocidad", "tiempo"],
                 "restricciones": {
-                    "tiempo": ["tiempo > 0",],
+                    "tiempo": [],
                     "velocidad": [],
                 }
             },
