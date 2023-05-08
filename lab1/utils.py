@@ -171,7 +171,7 @@ print(f"Formula: {formula}")
 print("--------------------")
 
 
-### AQUI EN ADELANTE SE RESUELVE EL PROBLEMA
+### AQUI EN ADELANTE SE RESUELVE EL PROBLEMA ---------------------
 
 print("Ingrese los valores de los parametros: ")
 
@@ -191,7 +191,12 @@ print(f"Parametros: {valores}")
 print("--------------------")
 
 # calculamos el resultado
-resultado = evaluar_formula(formula, valores)
+try:
+    resultado = evaluar_formula(formula, valores)
+except:
+    print("\nNo se puede dividir entre 0\n")
+    
+    
 print("--------------------")
 print(f"Resultado: {variable} = {resultado}")
 print("--------------------")
