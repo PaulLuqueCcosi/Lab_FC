@@ -2,7 +2,6 @@ import math
 import quantities as pq
 
 
-
 # definimos las formulas de MRU
 MRU = {
     "v": {
@@ -60,14 +59,14 @@ MRU = {
 MRUV = {
     # OK
     "a": {
-        "2 * (distancia - (velocidad_inicial * tiempo)) / math.pow(tiempo, 2)": {
+        "2 * (distancia - (velocidad_inicial * tiempo)) / (tiempo*tiempo)": {
             "parametros": ["distancia", "velocidad_inicial", "tiempo"],
             "restricciones": {
                 "distancia": [],
                 "velocidad_inicial": [],
                 "tiempo": ["tiempo > 0",],
             },
-            "unidades":{
+            "unidades": {
                 "distancia": "m",
                 "velocidad_inicial": "m/s",
                 "tiempo": "s",
@@ -92,7 +91,7 @@ MRUV = {
     },
     # OK
     "d": {
-        "velocidad_inicial * tiempo + (aceleracion * math.pow(tiempo,2)) / 2":  {
+        "velocidad_inicial * tiempo + (aceleracion * (tiempo*tiempo)) / 2":  {
             "parametros": ["velocidad_inicial", "tiempo", "aceleracion"],
             "restricciones": {
                 "velocidad_inicial": [],
@@ -108,7 +107,7 @@ MRUV = {
     },
     # OK
     "t": {
-        "(-velocidad_inicial + (math.pow(velocidad_inicial,2) + 2 * aceleracion * distancia) ** 0.5) / aceleracion": {
+        "(-velocidad_inicial + ((velocidad_inicial*velocidad_inicial) + 2 * aceleracion * distancia) ** 0.5) / aceleracion": {
 
             "parametros": ["velocidad_inicial", "aceleracion", "distancia"],
             "restricciones": {
@@ -123,9 +122,6 @@ MRUV = {
             }
         },
 
-
-
-
         "(velocidad_final - velocidad_inicial) / aceleracion":  {
 
 
@@ -135,6 +131,11 @@ MRUV = {
                 "velocidad_inicial": [],
                 "aceleracion": ["aceleracion > 0",],
             },
+            "unidades": {
+                "velocidad_final": "m/s",
+                "velocidad_inicial": "m/s",
+                "aceleracion": "m/s**2",
+            }
         },
 
     },
@@ -190,38 +191,51 @@ MRUV = {
 }
 
 
-# def evaluar_formula(formula, valores):
-#     # Reemplazamos las variables en la fórmula por sus valores correspondientes
-#     for variable, valor in valores.items():
-#         formula = formula.replace(variable, str(valor))
+def separar_magnitud(cadena):
+    num = ''
+    magnitud = ''
+    for caracter in cadena:
+        if caracter.isdigit() or caracter == '.':
+            num += caracter
+        else:
+            magnitud += caracter
 
-#     # Evaluamos la fórmula utilizando eval() y el módulo math
-#     try:
-#         resultado = eval(formula, {"__builtins__": None}, {"math": math})
+    try:
+        num = float(num)
+    except ValueError:
+        print(f"ERROR: '{num}' no es un número válido")
+        return None, None
 
-#     except:
-#         raise
+    # verificamos que la magnitud sea valida
+    if magnitud != "" and (magnitud.strip() not in dir(pq.units)):
+        print(f"ERROR: '{magnitud.strip()}' no es una magnitud válida")
+        return None, None
 
-#     return resultado
-
-
+    return num, magnitud.strip()
 
 
 def evaluar_formula(formula, valores, unidades):
     # Reemplazamos las variables en la fórmula por sus valores correspondientes
     for variable, valor in valores.items():
+        # valor en numero
         valor = str(valor)
+        # la unidad con la que se va a trabajar
         unidad = unidades[variable]
+        # lo que vamos a reemplazar en la formula
         valorParaReemplazar = f"pq.Quantity({valor}, '{unidad}')"
+        # Reemplazamos en la formula
         formula = formula.replace(variable, valorParaReemplazar)
 
     # Evaluamos la fórmula utilizando eval() y el módulo mat
     try:
-        print(formula)
-        resultado = eval(formula, {"__builtins__": None}, {"math": math, "pq":pq})
+        # agregamos pq y math
+        resultado = eval(formula, {"__builtins__": None}, {
+                         "math": math, "pq": pq})
 
+        # Ahora simplificamos el resultado
+        resultado = resultado.simplified
     except:
-        raise
+        print("Error al evaluar la formula")
 
     return resultado
 
@@ -328,61 +342,42 @@ print("--------------------")
 while (True):
     ok = True
     parametrosOK = True
+
     print("Ingrese los valores de los parametros: ")
 
     valores = {}
     unidades = dataSet[variable][formula]["unidades"]
+
+    # Ingreso del parametro
     for parametro in (dataSet[variable][formula]["parametros"]):
-        if (not ok):
-            break
 
-        try:
-            
-            #ingreso de la cadena
-            cadena = input(f"{parametro}: ")
-            
-            # tratamos de separa
-            try:
-                valor, unidad = cadena.split(" ")
-            except ValueError:
-                unidad = ""
-                
-            # verificammos si la unidad es la misma que el sistema internacional
-            if(unidad == ""):
-                unidad = unidades[parametro]
-            
-            if not unidades[parametro] == unidad:
-                #actualizamos la nueva unidad
-                unidades[parametro] = unidad
-                
-                
-            valores[parametro] = float(valor)
-            # unidad = pq.Quantity(1, unidad)
+        cadena = input(f"{parametro} ({unidades[parametro]}): ")
 
-            
-            # valores[parametro] = float(input(f"{parametro}: "))
+        # ingreso de la cadena
+        valor, unidad = separar_magnitud(cadena)
 
-        except ValueError:
-            print("\nSolo ingrese numeros\n")
+        # verificamos que no sea None
+        if (valor == None or unidad == None):
             ok = False
-            continue
+            break
 
         # Comprombamos las restricciones
         for restriccion in dataSet[variable][formula]["restricciones"][parametro]:
-            if not eval(restriccion.replace(parametro, str(valores[parametro]))):
+            if not eval(restriccion.replace(parametro, str(valor))):
                 print(
                     f"\nLa restricción '{restriccion}' no se cumple para el valor de '{parametro}' = {valores[parametro]}.")
-                parametrosOK = False
-                valores.pop(parametro)
-                break
+                ok = False
+                continue
 
-        if (not parametrosOK):
-            break
+        if (ok):
+            # llenamos los valores
+            valores[parametro] = valor
+            if (unidad != ""):
+                unidades[parametro] = unidad
 
-    if (not parametrosOK):
-        continue
-
-    break
+    if (ok):
+        # salimos del infinito
+        break
 
 
 print("--------------------")
