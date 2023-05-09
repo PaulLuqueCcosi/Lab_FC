@@ -9,6 +9,9 @@ formula = None
 valores = None
 unidades = None
 
+numeroDecimales = 4
+
+
 def separar_magnitud(cadena):
     num = ''
     magnitud = ''
@@ -33,9 +36,6 @@ def separar_magnitud(cadena):
         print(f"\nERROR: '{magnitud}' no es una magnitud válida")
         return None, None
 
-    # if magnitud != "" and (magnitud.strip() not in dir(pq.units)):
-    #     print(f"\nERROR: '{magnitud.strip()}' no es una magnitud válida")
-    #     return None, None
 
     return num, magnitud.strip()
 
@@ -189,7 +189,7 @@ def menu_parametros():
                     print(
                         f"\nLa restricción '{restriccion}' no se cumple para el valor de '{parametro} = {valor}'.")
                     ok = False
-                    continue
+                    break
 
             if (ok):
                 # llenamos los valores
@@ -203,9 +203,8 @@ def menu_parametros():
 
 
 def calcular():
-    global formula, valores, unidades, variable
+    global formula, valores, unidades, variable, numeroDecimales
     # calculamos el resultado
-    numeroDecimales = 4
     try:
         resultado = evaluar_formula(formula, valores, unidades, numeroDecimales)
     except:

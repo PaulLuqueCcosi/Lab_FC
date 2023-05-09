@@ -92,7 +92,7 @@ MRUV = {
             "parametros": ["velocidad_inicial", "tiempo", "aceleracion"],
             "restricciones": {
                 "velocidad_inicial": [],
-                "tiempo": [],
+                "tiempo": ["tiempo >= 0",],
                 "aceleracion": [],
             },
             "unidades": {
@@ -159,7 +159,7 @@ MRUV = {
             "restricciones": {
                 "velocidad_final": [],
                 "aceleracion": [],
-                "tiempo": [],
+                "tiempo": ["tiempo >= 0",],
             },
             "unidades": {
                 "velocidad_final": "m/s",
@@ -175,7 +175,7 @@ MRUV = {
             "restricciones": {
                 "velocidad_inicial": [],
                 "aceleracion": [],
-                "tiempo": [],
+                "tiempo": ["tiempo >= 0",],
             },
             "unidades": {
                 "velocidad_inicial": "m/s",
