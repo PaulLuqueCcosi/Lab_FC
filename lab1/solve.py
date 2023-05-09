@@ -12,10 +12,12 @@ unidades = None
 def separar_magnitud(cadena):
     num = ''
     magnitud = ''
+    flagIsNumero = True
     for caracter in cadena:
-        if caracter.isdigit() or caracter == '.' or caracter == '-':
+        if flagIsNumero and (caracter.isdigit() or caracter == '.' or caracter == '-'):
             num += caracter
         else:
+            flagIsNumero = False
             magnitud += caracter
 
     try:
@@ -38,7 +40,7 @@ def separar_magnitud(cadena):
     return num, magnitud.strip()
 
 
-def evaluar_formula(formula, valores, unidades):
+def evaluar_formula(formula, valores, unidades, decimales):
     # Reemplazamos las variables en la fórmula por sus valores correspondientes
     for variable, valor in valores.items():
         # valor en numero
@@ -61,6 +63,7 @@ def evaluar_formula(formula, valores, unidades):
     except:
         print("Error al evaluar la formula")
 
+    resultado = pq.Quantity(round(float(resultado.magnitude), decimales),resultado.units)
     return resultado
 
 def mostrar_resumen():
@@ -202,8 +205,9 @@ def menu_parametros():
 def calcular():
     global formula, valores, unidades, variable
     # calculamos el resultado
+    numeroDecimales = 4
     try:
-        resultado = evaluar_formula(formula, valores, unidades)
+        resultado = evaluar_formula(formula, valores, unidades, numeroDecimales)
     except:
         print("\nNo se puede dividir entre 0\n")
 
