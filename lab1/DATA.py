@@ -102,14 +102,14 @@ MRUV = {
             }
         },
     },
-    # OK
+    # TODO
     "t": {
         "(-velocidad_inicial + ((velocidad_inicial*velocidad_inicial) + 2 * aceleracion * distancia) ** 0.5) / aceleracion": {
 
             "parametros": ["velocidad_inicial", "aceleracion", "distancia"],
             "restricciones": {
                 "velocidad_inicial": [],
-                "aceleracion": ["aceleracion > 0",],
+                "aceleracion": ["aceleracion != 0", ],
                 "distancia": [],
             },
             "unidades": {
@@ -126,7 +126,7 @@ MRUV = {
             "restricciones": {
                 "velocidad_final": [],
                 "velocidad_inicial": [],
-                "aceleracion": ["aceleracion > 0",],
+                "aceleracion": ["aceleracion != 0",],
             },
             "unidades": {
                 "velocidad_final": "m/s",
