@@ -13,7 +13,8 @@ MRU = {
                 "unidades": {
                     "distancia": "m",
                     "tiempo": "s",
-                }
+                },
+                "restriccion_formula": "",
             },
     },
 
@@ -30,6 +31,8 @@ MRU = {
                     "velocidad": "m/s",
                     "tiempo": "s",
                 },
+                "restriccion_formula": "",
+
             },
     },
     "t": {
@@ -44,6 +47,9 @@ MRU = {
                     "distancia": "m",
                     "velocidad": "m/s",
                 },
+
+                "restriccion_formula": "",
+
             },
     },
 
@@ -67,7 +73,10 @@ MRUV = {
                 "distancia": "m",
                 "velocidad_inicial": "m/s",
                 "tiempo": "s",
-            }
+            },
+            "restriccion_formula": "",
+          
+
         },
 
         "(velocidad_final - velocidad_inicial) / tiempo": {
@@ -81,7 +90,8 @@ MRUV = {
                 "velocidad_final": "m/s",
                 "velocidad_inicial": "m/s",
                 "tiempo": "s",
-            }
+            },
+            "restriccion_formula": "",
         },
 
 
@@ -99,7 +109,8 @@ MRUV = {
                 "velocidad_inicial": "m/s",
                 "tiempo": "s",
                 "aceleracion": "m/s**2",
-            }
+            },
+            "restriccion_formula": "",
         },
     },
     # TODO
@@ -116,7 +127,8 @@ MRUV = {
                 "velocidad_inicial": "m/s",
                 "aceleracion": "m/s**2",
                 "distancia": "m",
-            }
+            },
+            "restriccion_formula": "velocidad_inicial**2 + 2 * aceleracion * distancia >= 0"
         },
 
         "(velocidad_final - velocidad_inicial) / aceleracion":  {
@@ -132,7 +144,8 @@ MRUV = {
                 "velocidad_final": "m/s",
                 "velocidad_inicial": "m/s",
                 "aceleracion": "m/s**2",
-            }
+            },
+            "restriccion_formula": ""
         },
 
     },
@@ -150,7 +163,8 @@ MRUV = {
                 "distancia": "m",
                 "tiempo": "s",
                 "aceleracion": "m/s**2",
-            }
+            },
+            "restriccion_formula": ""
         },
 
 
@@ -165,7 +179,8 @@ MRUV = {
                 "velocidad_final": "m/s",
                 "aceleracion": "m/s**2",
                 "tiempo": "s",
-            }
+            },
+            "restriccion_formula": ""
         },
     },
     # OK
@@ -181,7 +196,8 @@ MRUV = {
                 "velocidad_inicial": "m/s",
                 "aceleracion": "m/s**2",
                 "tiempo": "s",
-            }
+            },
+            "restriccion_formula": ""
         },
     },
 

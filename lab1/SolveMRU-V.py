@@ -158,7 +158,7 @@ def menu_formulas():
     formula = list(dataSet[variable].keys())[formulaIndice - 1]
 
 def menu_parametros():
-    global valores, unidades
+    global valores, unidades, variable
     # INGRESO DE PARAMETROS ------------------------------------
     while (True):
         ok = True
@@ -191,14 +191,29 @@ def menu_parametros():
                     ok = False
                     break
 
+          
+                
             if (ok):
                 # llenamos los valores
                 valores[parametro] = valor
                 if (unidad != ""):
                     unidades[parametro] = unidad
 
+        # verificamos si la formula tiene restricciones
+        restriccion = dataSet[variable][formula]["restriccion_formula"]
+        
+        # no hay restriccion adicional
+        if(restriccion != ""):            
+            for valor in valores.keys():
+                restriccion = restriccion.replace(valor, str(valores[valor]))
+            # evaluamos las restricion adicional
+            if not eval(restriccion):
+                print(f"\nLA FORMULA NO PUEDE APLICARSE CON ESOS VALORES'.")
+                exit()
+            
+
+        # si todo esta bien
         if (ok):
-            # salimos del infinito
             break
 
 
