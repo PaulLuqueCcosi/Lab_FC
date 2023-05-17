@@ -111,9 +111,11 @@ class Controller:
         velocity_values = [self.model.initial_velocity, self.model.final_velocity]
 
         plt.plot(time_values, velocity_values)
-        plt.xlabel('Tiempo')
-        plt.ylabel('Velocidad')
+        plt.xlabel('Tiempo (s)')
+        plt.ylabel('Velocidad (m/s)')
         plt.title('Cambio de velocidad')
+        plt.ylim(min(velocity_values) * 1.1, max(velocity_values) * 1.1)
+
         plt.show()
 
     def run(self):
