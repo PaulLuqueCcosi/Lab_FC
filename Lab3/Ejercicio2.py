@@ -2,51 +2,79 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-def calculateAmplitude(fuerza, m, b, w, w0):
+A = None
+
+fuerza = None
+m = None
+b = None
+w = None
+w0 = None
+
+t_i = None
+t_f = None
+phi = None
+
+
+def IngresoDatos():
+    global A, fuerza, m, b, w, w0, t_i, t_f, phi
+    while(True):
+        print("\nIngrese los datos de la onda Oscilacion forzada")
+        try:
+            fuerza = float(input("Ingrese la FUERZA (N): "))
+            m = float(input("Ingrese la MASA (kg): "))
+            if(m <= 0):
+                print("La MASA tiene que ser positiva")
+                continue
+            
+            b = float(input("Ingrese el COEFICIENTE DE AMORTIGUAMIENTO: "))
+            w = float(input("Ingrese la VELOCIDAD ANGULAR (rad/s): "))
+            w0 = float(input("Ingrese la VELOCIDAD ANGULAR NATURAL (rad/s): "))
+            
+            t_i = float(input("Ingrese el TIEMPO INICIAL (s): "))
+            t_f = float(input("Ingrese el TIEMPO FINAL (s): "))
+            if(t_f <= t_i):
+                print("El tiempo final debe ser mayor al tiempo inicial")
+                continue
+            
+            phi = float(input("Ingrese de la FASE (rad): "))
+            break
+        except ValueError:
+            print("Ingrese valores válidos")
+            continue
+
+def calculateAmplitud(fuerza, m, b, w, w0):
+    global A
     numerador = fuerza/m
     denominador = pow(pow(w,2)-pow(w0,2),2)+pow(b*w/m,2)
     
     # halla mso el numerador entre la raiz del denominador
-    result = numerador/math.sqrt(denominador)
-    return result
+    A = numerador/math.sqrt(denominador)
+    print(f"Amplitud : {A} m")
+    return A
 
-     
+def posicion_forzada(fuerza, m, b,w, w0, t_i, t_f, phi):
+    A = calculateAmplitud(fuerza, m, b, w, w0)
+    t_ = np.arange(t_i, t_f, 0.1)
+    x_ = A*np.cos(w*t_ + phi)
+    return t_, x_
 
-def MAS():
-    #A = float(input("Ingrese la amplitud: "))
+def graficaresultados(t_, x_):
+    fig, ax1 = plt.subplots( figsize=(8, 10))
     
-    fuerza = float(input("Ingrese la fuerza: "))
-    m = float(input("Ingrese la masa: "))
-    b = float(input("Ingrese el coeficiente de amortiguamiento: "))
-    w = float(input("Ingrese la velocidad angular: "))
-    w0 = float(input("Ingrese la velocidad angular inicial: "))
+    # Gráfico de posición
+    ax1.plot(t_, x_, color='blue', label='Posición')
+    ax1.axhline(0, color='black', linewidth=0.5, linestyle='dashed')  # Línea punteada del eje x
     
-    t_i = float(input("Ingrese el tiempo inicial: "))
-    t_f = float(input("Ingrese el tiempo final: "))
-    phi = float(input("Ingrese de la fase: "))  
-
-    A = calculateAmplitude(fuerza, m, b, w, w0)
-    print("La amplitud es: ", A)
-    
-    t_ = np.arange(t_i, t_f, 0.5)
-    x_ = A*np.cos(np.radians(w*t_ + phi))
-    velocidad_ = -A*w*np.sin(np.radians(w*t_+phi))
-    
-
-    fig, (ax1, ax2) = plt.subplots(1,2)
-    fig.set_size_inches(12,5)
-    ax1.plot(t_,x_)
+    ax1.set_ylabel("Posición (m)")
+    ax1.set_xlabel("Tiempo (s)")
     ax1.set_title("Posición")
-    ax2.plot(t_,velocidad_)
-    ax2.set_title("Velocidad")
-
-
+    ax1.legend()
+     
+    plt.tight_layout()  # Ajusta los espacios entre los subgráficos
     plt.show()
 
-    velocidad_max = w*A
-    print("La velocidad máxima es: ", velocidad_max, "m/s")
-    
-    aceleracion_max = pow(w,2)*A
-    print("La aceleración máxima es: ", aceleracion_max, "m/s2")
-    
-MAS()
+
+# Inicio del programa-----------------------
+IngresoDatos()
+t_, x_ = posicion_forzada(fuerza, m, b, w, w0, t_i, t_f, phi)
+graficaresultados(t_, x_)
