@@ -1,15 +1,15 @@
 import math
 
+K = 2.97e-19 #s2/m3
 
 def inputData():
   global m, G, r
   continuar = ""
   while(True):
     try:
-        l = float(input("Ingrese el momento angular (kg·m2/s) (7.046e33 'tierra'): "))
-        m = float(input("Ingrese la masa reducida del planeta (Kg) (5.972e24 'tierra'): "))
-        t = float(input("Ingrese el tiempo transcurrido (s): "))
-        return l, m, t
+        r = float(input("Ingrese el semieje mayor (km) (1.496e8 'tierra'): "))
+        r = r*1000 # km to m
+        return r
     except ValueError:
       print("Valor incorrecto")
       continuar = input("\n'exit' para salir: ")
@@ -17,16 +17,18 @@ def inputData():
     if(continuar == "exit"):
       exit()
 
-
-def calculeA(l, m, t):
-    A = (l / (2 * m)) * t
-    return A
+def calcularPeriodo(r):
+  global K
+  T = math.sqrt(K * r**3)
+  return T
 
 def main():
-    l, m, t = inputData()
-    area = calculeA(l, m, t)
-    areaKm = area*1e-6
-    print("El área barrida por el planeta es:", round(areaKm,4) ,"km2")
+  r = inputData()
+  periodo = calcularPeriodo(r)
+  periodoDias = periodo / (24 * 60 * 60) # para los dias
+
+  print(f"El periodo orbital del planeta es: {round(periodo,4)} s")
+  print(f"El periodo orbital del planeta es: {round(periodoDias,4)} dias terrestres")
 
 if __name__ == "__main__":
-    main()
+  main()
