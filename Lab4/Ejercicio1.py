@@ -39,7 +39,7 @@ def main():
   inputData()
   print("\n-----------DATOS-----------")
   print(f"MASA: {round(m,3)} kg")
-  print(f"RADIO {round(r,3)} km")
+  print(f"RADIO {round(r,3)} m")
   g = calculeG(m, r)
   print(f"\nGRAVEDAD: {round(g,4)} m/s2")
 
